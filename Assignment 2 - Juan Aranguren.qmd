@@ -154,11 +154,17 @@ count
 #First, let's count the number of shootings by month
 shootings_month <- mass_shootings %>%
   group_by(month) %>% 
-  summarize(count = n()) %>% 
-  mutate(month = shootings_per_month$Month, shootings_per_month$n, .desc = TRUE)
+  summarize(count = n())
+
+# Specify the desired order of month names
+month_order <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+# Reorder the levels of month variable
+month_order <- shootings_month %>%
+  mutate(month = factor(month, levels = month_order, ordered = TRUE))
 
 #Then we generate the bar chart
-bar_chart <- ggplot(shootings_month, aes(x = month, y = count, fill = month)) +
+bar_chart <- ggplot(month_order, aes(x = month, y = count, fill = month)) +
   geom_bar(stat = "identity") +
   labs(x = "Month", y = "Number of mass shootings", title = "Number of Mass Shootings by Month") +
   theme_minimal() +
@@ -591,9 +597,7 @@ ggplot(arg_format, aes(x = year, y = generation, fill = source)) +
   scale_fill_discrete()
 
 #Question 2
-install.packages("ggthemes")
-library("ggthemes") 
-
+library("ggthemes")
 # First we are going to merge CO2 per capita and GDP per capita data
 co2_gdp <- left_join(co2_percap, gdp_percap, by = c("iso2c","iso3c","country","year"))
 
@@ -721,8 +725,6 @@ create_country_plots <- function(country_name) {
   all_plots <- all_plots + plot_layout(ncol=1 ,nrow = 4, heights = c(2, 2, 2))
 }
 
-argentina_plots <- create_country_plots("Argentina")
-argentina_plots
 ```
 
 
